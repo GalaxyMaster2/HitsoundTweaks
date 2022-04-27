@@ -1,0 +1,12 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
+  "id": "HitsoundTweaks",
+  "name": "HitsoundTweaks",
+  "author": "GalaxyMaster",
+  "version": "1.0.0",
+  "description": "Adds more configurability to hitsounds, and fixes several base game bugs to make them more reliable and consistent.",
+  "gameVersion": "1.21.0",
+  "dependsOn": {
+    "BSIPA": "^4.2.0"
+  }
+}
