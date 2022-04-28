@@ -45,17 +45,25 @@ namespace HitsoundTweaks.HarmonyPatches
         }
 
         // reimplement _dspTimeOffset correction
-        static void Postfix(ref double ____dspTimeOffset, AudioSource ____audioSource, float ____timeScale)
+        static bool firstCorrectionDone = false;
+        static void Postfix(ref double ____dspTimeOffset, AudioSource ____audioSource, float ____timeScale, AudioTimeSyncController.State ____state)
         {
-            const double maxDiscrepancy = 0.1;
+            const double maxDiscrepancy = 0.05;
             const float correctionRate = 0.0f; // smooth correction disabled as this seems to be causing drift somehow
+
+            if (____state == AudioTimeSyncController.State.Stopped)
+            {
+                firstCorrectionDone = false; // easiest way to reset this flag, Update is reliably called at least a few frames before playback starts
+                return;
+            }
 
             var audioTime = ____audioSource.timeSamples / (double)____audioSource.clip.frequency;
             var targetOffset = AudioSettings.dspTime - (audioTime / ____timeScale);
 
-            if (Math.Abs(____dspTimeOffset - targetOffset) > maxDiscrepancy)
+            if (!firstCorrectionDone || Math.Abs(____dspTimeOffset - targetOffset) > maxDiscrepancy)
             {
                 ____dspTimeOffset = targetOffset;
+                firstCorrectionDone = true;
                 return;
             }
 
