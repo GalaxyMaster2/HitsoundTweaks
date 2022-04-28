@@ -48,7 +48,7 @@ namespace HitsoundTweaks.HarmonyPatches
         static void Postfix(ref double ____dspTimeOffset, AudioSource ____audioSource, float ____timeScale)
         {
             const double maxDiscrepancy = 0.1;
-            const float correctionRate = 0.01f;
+            const float correctionRate = 0.0f; // smooth correction disabled as this seems to be causing drift somehow
 
             var audioTime = ____audioSource.timeSamples / (double)____audioSource.clip.frequency;
             var targetOffset = AudioSettings.dspTime - (audioTime / ____timeScale);
