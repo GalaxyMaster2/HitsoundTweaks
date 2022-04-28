@@ -64,7 +64,7 @@ namespace HitsoundTweaks.HarmonyPatches
             var audioTime = ____audioSource.timeSamples / (double)____audioSource.clip.frequency;
             var targetOffset = AudioSettings.dspTime - (audioTime / (double)____timeScale);
 
-            if (!firstCorrectionDone || Math.Abs(____dspTimeOffset - targetOffset) > maxDiscrepancy)
+            if (!firstCorrectionDone || Math.Abs(____dspTimeOffset - syncOffset - targetOffset) > maxDiscrepancy)
             {
                 ____dspTimeOffset = targetOffset + syncOffset;
                 firstCorrectionDone = true;
