@@ -10,8 +10,8 @@ namespace HitsoundTweaks.HarmonyPatches
     /*
      * For some reason, either the dspTime or the AudioSource time doesn't behave as it should, resulting in the _dspTimeOffset field oscillating between 2 values
      * This causes hitsound timings to be irregular, which is audible to the player
-     * To fix this, we patch out the _dspTimeOffset update, and reimplement it to smoothly interpolate between the current and the target values
-     * As far as I know, AudioSource time and dspTime should not diverge, but to account for any possibility of it happening, the correction is there
+     * To fix this, we patch out the _dspTimeOffset update, and reimplement it to be a cumulative average of the target offset calculated each frame
+     * This reliably and consistently gets within a handful of audio samples after a few seconds, which is for all intents and purposes good enough
      */
     [HarmonyPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.Update))]
     internal class AudioTimeSyncController_dspTimeOffset_Patch
@@ -46,10 +46,14 @@ namespace HitsoundTweaks.HarmonyPatches
 
         // reimplement _dspTimeOffset correction
         static bool firstCorrectionDone = false;
+        static int averageCount = 1;
         static void Postfix(ref double ____dspTimeOffset, AudioSource ____audioSource, float ____timeScale, AudioTimeSyncController.State ____state)
         {
             const double maxDiscrepancy = 0.05;
-            const float correctionRate = 0.0f; // smooth correction disabled as this seems to be causing drift somehow
+
+            // the cumulative average trends towards a consistent slightly desynced value, which this offset compensates for
+            // this value works well at both 90 and 60 fps, so I'm assuming it's independent of framerate
+            const double syncOffset = -0.0059;
 
             if (____state == AudioTimeSyncController.State.Stopped)
             {
@@ -58,17 +62,23 @@ namespace HitsoundTweaks.HarmonyPatches
             }
 
             var audioTime = ____audioSource.timeSamples / (double)____audioSource.clip.frequency;
-            var targetOffset = AudioSettings.dspTime - (audioTime / ____timeScale);
+            var targetOffset = AudioSettings.dspTime - (audioTime / (double)____timeScale);
 
             if (!firstCorrectionDone || Math.Abs(____dspTimeOffset - targetOffset) > maxDiscrepancy)
             {
-                ____dspTimeOffset = targetOffset;
+                ____dspTimeOffset = targetOffset + syncOffset;
                 firstCorrectionDone = true;
+                averageCount = 1;
                 return;
             }
 
-            // Mathf.Lerp() doesn't work with doubles
-            ____dspTimeOffset += (targetOffset - ____dspTimeOffset) * Mathf.Clamp01(Time.deltaTime * ____timeScale * correctionRate);
+            // lock in value after some time
+            if (averageCount < 10000)
+            {
+                // update cumulative average
+                ____dspTimeOffset = (((____dspTimeOffset - syncOffset) * averageCount + targetOffset) / (averageCount + 1)) + syncOffset;
+                averageCount++;
+            }
         }
     }
 }
