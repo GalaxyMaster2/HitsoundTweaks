@@ -35,9 +35,14 @@ namespace HitsoundTweaks.HarmonyPatches
         }
 
         // set transform position if desired
-        static void Postfix(NoteCutSoundEffect __instance, AudioSource ____audioSource, NoteController ____noteController, NoteController noteController, in NoteCutInfo noteCutInfo)
+        static void Postfix(NoteCutSoundEffect __instance, AudioSource ____audioSource, NoteController ____noteController, bool ____goodCut, NoteController noteController, in NoteCutInfo noteCutInfo)
         {
-            if (!PluginConfig.Instance.StaticSoundPos && ____audioSource.spatialize && ____noteController == noteController)
+            if (____noteController != noteController || !____audioSource.spatialize)
+            {
+                return;
+            }
+
+            if (!PluginConfig.Instance.StaticSoundPos || !____goodCut)
             {
                 __instance.transform.position = noteCutInfo.cutPoint;
             }
