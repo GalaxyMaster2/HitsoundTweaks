@@ -47,6 +47,7 @@ namespace HitsoundTweaks.HarmonyPatches
         // reimplement _dspTimeOffset correction
         static bool firstCorrectionDone = false;
         static int averageCount = 1;
+        static double averageOffset = 0.0;
         static void Postfix(ref double ____dspTimeOffset, AudioSource ____audioSource, float ____timeScale, AudioTimeSyncController.State ____state)
         {
             const double maxDiscrepancy = 0.05;
@@ -64,21 +65,24 @@ namespace HitsoundTweaks.HarmonyPatches
             var audioTime = ____audioSource.timeSamples / (double)____audioSource.clip.frequency;
             var targetOffset = AudioSettings.dspTime - (audioTime / (double)____timeScale);
 
-            if (!firstCorrectionDone || Math.Abs(____dspTimeOffset - syncOffset - targetOffset) > maxDiscrepancy)
+            if (!firstCorrectionDone || Math.Abs(averageOffset - targetOffset) > maxDiscrepancy)
             {
-                ____dspTimeOffset = targetOffset + syncOffset;
-                firstCorrectionDone = true;
+                averageOffset = targetOffset;
                 averageCount = 1;
-                return;
+                firstCorrectionDone = true;
+            }
+            else
+            {
+                // lock in value after some time
+                if (averageCount < 10000)
+                {
+                    // update cumulative average
+                    averageOffset = (averageOffset * averageCount + targetOffset) / (averageCount + 1);
+                    averageCount++;
+                }
             }
 
-            // lock in value after some time
-            if (averageCount < 10000)
-            {
-                // update cumulative average
-                ____dspTimeOffset = (((____dspTimeOffset - syncOffset) * averageCount + targetOffset) / (averageCount + 1)) + syncOffset;
-                averageCount++;
-            }
+            ____dspTimeOffset = averageOffset + syncOffset;
         }
     }
 }
