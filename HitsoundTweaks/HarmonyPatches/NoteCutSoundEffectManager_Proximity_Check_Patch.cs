@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 
@@ -29,19 +30,79 @@ namespace HitsoundTweaks.HarmonyPatches
                     break;
                 }
             }
+
+            // disable volume reduction for same time notes of different color
+            for (int i = 0; i < code.Count - 41; i++)
+            {
+                if (code[i + 24].opcode == OpCodes.Callvirt && (MethodInfo)code[i + 24].operand == AccessTools.PropertySetter(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.volumeMultiplier)))
+                {
+                    // haha NOP go brr (I'm sorry)
+                    for (int j = 0; j < 42; j++)
+                    {
+                        code[i + j].opcode = OpCodes.Nop;
+                    }
+                    break;
+                }
+            }
+
             return code;
         }
 
-        // reimplement note time proximity check by absolute value, to allow for out of order spawned notes (needed for chains)
-        static bool Prefix(NoteController noteController, float ____prevNoteATime, float ____prevNoteBTime)
+        static bool Prefix(NoteController noteController, float ____prevNoteATime, float ____prevNoteBTime, NoteCutSoundEffect ____prevNoteASoundEffect, NoteCutSoundEffect ____prevNoteBSoundEffect, float ____beatAlignOffset, out bool __state)
         {
+            __state = false; // whether or not we should multiply volume in the Postfix
             NoteData noteData = noteController.noteData;
+
+            // reimplement note time proximity check by absolute value, to allow for out of order spawned notes (needed for chains)
             if ((noteData.colorType == ColorType.ColorA && Mathf.Abs(noteData.time - ____prevNoteATime) < 0.001f) || (noteData.colorType == ColorType.ColorB && Mathf.Abs(noteData.time - ____prevNoteBTime) < 0.001f))
             {
                 return false;
             }
 
+            // reimplement volume reduction for same time notes of different color to account for out of order notes
+            var reduceVolume = false;
+            if (Mathf.Abs(noteData.time - ____prevNoteATime) < 0.001f || Mathf.Abs(noteData.time - ____prevNoteBTime) < 0.001f)
+            {
+                // add extra null check just to be safe, though it shouldn't be necessary
+                if (noteData.colorType == ColorType.ColorA && ____prevNoteBSoundEffect != null && ____prevNoteBSoundEffect.enabled)
+                {
+                    reduceVolume = true;
+
+                    // I'm not sure if this is intentional, or it was supposed to be *= instead
+                    // but this is how the base game does it
+                    ____prevNoteBSoundEffect.volumeMultiplier = 0.9f;
+                }
+                else if (noteData.colorType == ColorType.ColorB && ____prevNoteASoundEffect != null && ____prevNoteASoundEffect.enabled)
+                {
+                    reduceVolume = true;
+                    ____prevNoteASoundEffect.volumeMultiplier = 0.9f;
+                }
+            }
+
+            // if flag2 is true, then the volume was already multiplied by the original method
+            var flag2 = noteData.timeToPrevColorNote < ____beatAlignOffset;
+            __state = reduceVolume && !flag2;
+
             return true;
+        }
+
+        // multiply volume if indicated by Prefix
+        static void Postfix(NoteController noteController, NoteCutSoundEffect ____prevNoteASoundEffect, NoteCutSoundEffect ____prevNoteBSoundEffect, bool __state)
+        {
+            if (__state)
+            {
+                var noteColor = noteController.noteData.colorType;
+
+                // the previous sound effect has now been assigned to the one just created, so we can access it here to adjust volume
+                if (noteColor == ColorType.ColorA)
+                {
+                    ____prevNoteASoundEffect.volumeMultiplier *= 0.9f;
+                }
+                else if (noteColor == ColorType.ColorB)
+                {
+                    ____prevNoteBSoundEffect.volumeMultiplier *= 0.9f;
+                }
+            }
         }
     }
 }
