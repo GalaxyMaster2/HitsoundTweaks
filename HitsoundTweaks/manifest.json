@@ -3,7 +3,7 @@
   "id": "HitsoundTweaks",
   "name": "HitsoundTweaks",
   "author": "GalaxyMaster",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Adds more configurability to hitsounds, and fixes several base game bugs to make them more reliable and consistent.",
   "gameVersion": "1.21.0",
   "dependsOn": {
