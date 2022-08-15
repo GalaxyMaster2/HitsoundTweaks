@@ -1,7 +1,7 @@
-﻿using HarmonyLib;
-using UnityEngine;
-using BeatSaberMarkupLanguage.Settings;
+﻿using BeatSaberMarkupLanguage.Settings;
+using HarmonyLib;
 using HitsoundTweaks.Configuration;
+using UnityEngine;
 
 namespace HitsoundTweaks
 {

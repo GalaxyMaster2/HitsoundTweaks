@@ -1,6 +1,6 @@
-﻿using IPA.Config.Stores;
+﻿using BeatSaberMarkupLanguage.Attributes;
+using IPA.Config.Stores;
 using System.Runtime.CompilerServices;
-using BeatSaberMarkupLanguage.Attributes;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace HitsoundTweaks.Configuration
