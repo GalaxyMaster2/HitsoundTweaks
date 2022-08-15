@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
+using BeatSaberMarkupLanguage.Settings;
+using HitsoundTweaks.Configuration;
 
 namespace HitsoundTweaks
 {
@@ -61,6 +63,8 @@ namespace HitsoundTweaks
 
             var harmony = new Harmony("com.galaxymaster.hitsoundtweaks");
             harmony.PatchAll();
+
+            BSMLSettings.instance.AddSettingsMenu("HitsoundTweaks", "HitsoundTweaks.UI.ModSettingsView.bsml", PluginConfig.Instance);
 
             Plugin.Log?.Debug($"{name}: Awake()");
         }

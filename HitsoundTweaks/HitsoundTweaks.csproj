@@ -52,6 +52,11 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="BSML">
+      <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="GameplayCore">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
       <Private>False</Private>
@@ -133,6 +138,7 @@
   <ItemGroup>
     <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')" />
     <None Include="HitsoundTweaks.csproj.user" Condition="Exists('HitsoundTweaks.csproj.user')" />
+    <EmbeddedResource Include="UI\ModSettingsView.bsml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BeatSaberModdingTools.Tasks">
