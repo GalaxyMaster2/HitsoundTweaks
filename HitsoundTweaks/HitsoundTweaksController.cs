@@ -34,7 +34,7 @@ namespace HitsoundTweaks
 
             var config = AudioSettings.GetConfiguration();
             config.numVirtualVoices = 128;
-            config.numRealVoices = 128;
+            config.numRealVoices = 64;
             Plugin.Log?.Info($"Attempting to set number of virtual voices to {config.numVirtualVoices}");
             Plugin.Log?.Info($"Attempting to set number of real voices to {config.numRealVoices}");
             AudioSettings.Reset(config);
