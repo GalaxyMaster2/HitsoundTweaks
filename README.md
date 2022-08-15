@@ -2,16 +2,16 @@
 Beat Saber mod that adds more configurability to hitsounds, and fixes several base game bugs to make them more reliable and consistent.
 
 # Usage
-By default, this mod does nothing (other than fixing some bugs). Upon first launch, `UserData/HitsoundTweaks.json` will be created. There you can configure the various options this mod gives you.
+By default, this mod does nothing (other than fixing some bugs). You can configure the various options this mod gives you in the Mod Settings menu.
 
 # Configuration
-All configuration is done in the `UserData/HitsoundTweaks.json` file. There is no UI to change the configuration in game, however changes made to the file will apply in real time while the game is running.
+Configuration is done in the Mod Settings menu in game, or in the configuration file at `UserData/HitsoundTweaks.json`. Changes made to the configuration file will apply in real time while the game is running.
 
 The available options are:
-* `IgnoreSaberSpeed` (default `false`): When set to `true`, hitsounds always play even when the sabers are not moving. This is useful to hear hitsounds while in fpfc.
-* `StaticSoundPos` (default `false`): By default, the game attaches the position of hitsounds to your saber tips. When this option is set to `true`, hitsounds are instead located at your feet. This can help make hitsound timings more consistent, and you may prefer how this sounds. When hitsound spatialization is disabled, this does nothing.
-* `EnableSpatialization` (default `true`): Controls whether or not hitsounds are spatialized. Spatialization can make hitsounds sound quite different in game compared to outside it. Setting this to `false` makes hitsounds sound exactly as they do outside of the game.
-* `RandomPitchMin` (default `0.9`): Sets the minimum pitch for hitsound pitch randomization.
-* `RandomPitchMax` (default `1.2`): Sets the maximum pitch for hitsound pitch randomization. When min and max are equal, pitch is constant.
-* `EnableChainElementHitsounds` (default `false`): By default, the game disables hitsounds for chain elements. With this option you can enable them.
-* `ChainElementVolumeMultiplier` (default `1.0`): Allows you to scale the volume of chain element hitsounds independent of other hitsounds. Primarily useful to lower this a bit if you find chain hitsounds to be overly loud.
+* **Ignore Saber Speed** (`IgnoreSaberSpeed`, default `false`): When enabled, hitsounds always play even when the sabers are not moving. This is useful to hear hitsounds while in fpfc.
+* **Static Sound Position** (`StaticSoundPos`, default `false`): When enabled, hitsounds are located at your feet, instead of your saber tips. This can help make hitsound timings more consistent, and you may prefer how this sounds. When hitsound spatialization is disabled, this does nothing.
+* **Hitsound Spatialization** (`EnableSpatialization`, default `true`): When disabled, hitsounds will be played as-is without further processing, instead of being spatialized. Spatialization places sounds in 3D space and uses processing to fool your ears into hearing the sound at that location. This can make hitsounds sound quite different in game compared to outside it. Disabling it is primarily useful to play hitsounds exactly as they sound outside the game.
+* **Random Pitch (min)** (`RandomPitchMin`, default `0.9`): The minimum value for randomized hitsound pitch.
+* **Random Pitch (max)** (`RandomPitchMax`, default `1.2`): The maximum value for randomized hitsound pitch. If minimum and maximum are equal, hitsound pitch is not randomized.
+* **Enable Chain Element Hitsounds** (`EnableChainElementHitsounds`, default `false`): When enabled, hitsounds will be played for chain elements.
+* **Chain Volume Multiplier** (`ChainElementVolumeMultiplier`, default `0.8`): Volume multiplier used for chain element hitsounds. Primarily useful for lowering volume if you find chain hitsounds to be overly loud.
