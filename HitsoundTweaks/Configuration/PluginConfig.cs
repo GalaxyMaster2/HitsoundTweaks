@@ -28,6 +28,6 @@ namespace HitsoundTweaks.Configuration
         public virtual bool EnableChainElementHitsounds { get; set; } = false;
 
         [UIValue("chain-element-volume-multiplier")]
-        public virtual float ChainElementVolumeMultiplier { get; set; } = 1.0f;
+        public virtual float ChainElementVolumeMultiplier { get; set; } = 0.8f;
     }
 }
