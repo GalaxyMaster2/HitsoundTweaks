@@ -25,7 +25,7 @@ namespace HitsoundTweaks.HarmonyPatches
                 if (code[i].opcode == OpCodes.Callvirt && (MethodInfo)code[i].operand == AccessTools.PropertyGetter(typeof(List<NoteCutSoundEffect>), "Count"))
                 {
                     // subtract 8 to give some overhead, don't go below base game value of 64
-                    code[i + 1].operand = Mathf.Max(HitsoundTweaksController.Instance.NumVirtualVoices - 8, 64);
+                    code[i + 1].operand = Mathf.Max(HitsoundTweaksController.CurrentNumVirtualVoices - 8, 64);
                     break;
                 }
             }

@@ -13,7 +13,7 @@ namespace HitsoundTweaks
     {
         public static HitsoundTweaksController Instance { get; private set; }
 
-        public int NumVirtualVoices = 32;
+        public static int CurrentNumVirtualVoices = 32;
 
         #region Monobehaviour Messages
         /// <summary>
@@ -39,7 +39,7 @@ namespace HitsoundTweaks
             Plugin.Log?.Info($"Attempting to set number of real voices to {config.numRealVoices}");
             AudioSettings.Reset(config);
             var newConfig = AudioSettings.GetConfiguration();
-            NumVirtualVoices = newConfig.numVirtualVoices;
+            CurrentNumVirtualVoices = newConfig.numVirtualVoices;
 
             if (newConfig.numVirtualVoices == config.numVirtualVoices)
             {
@@ -48,7 +48,7 @@ namespace HitsoundTweaks
             else
             {
                 Plugin.Log?.Warn($"Failed to set number of virtual voices to the desired value");
-                Plugin.Log?.Info($"Number of virtual voices is currently: {NumVirtualVoices}");
+                Plugin.Log?.Info($"Number of virtual voices is currently: {CurrentNumVirtualVoices}");
             }
 
             if (newConfig.numRealVoices == config.numRealVoices)
