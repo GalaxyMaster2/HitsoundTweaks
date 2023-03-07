@@ -87,9 +87,9 @@ namespace HitsoundTweaks.HarmonyPatches
         }
 
         // multiply volume if indicated by Prefix
-        static void Postfix(NoteController noteController, NoteCutSoundEffect ____prevNoteASoundEffect, NoteCutSoundEffect ____prevNoteBSoundEffect, bool __state)
+        static void Postfix(NoteController noteController, NoteCutSoundEffect ____prevNoteASoundEffect, NoteCutSoundEffect ____prevNoteBSoundEffect, bool __state, bool __runOriginal)
         {
-            if (__state)
+            if (__state && __runOriginal)
             {
                 var noteColor = noteController.noteData.colorType;
 
