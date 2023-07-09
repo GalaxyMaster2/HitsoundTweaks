@@ -56,7 +56,7 @@ namespace HitsoundTweaks.HarmonyPatches
         }
     }
 
-    [HarmonyPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.LateUpdate))]
+    [HarmonyPatch(typeof(NoteCutSoundEffect), "LateUpdate")]
     internal class NoteCutSoundEffect_Transform_Position_LateUpdate_Patch
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

@@ -7,7 +7,7 @@ namespace HitsoundTweaks.HarmonyPatches
      * By default, hitsounds are not played for chain elements
      * These patches enable them and apply a volume multiplier based on config values
      */
-    [HarmonyPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.IsSupportedNote))]
+    [HarmonyPatch(typeof(NoteCutSoundEffectManager), "IsSupportedNote")]
     internal class NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch
     {
         static void Postfix(NoteData noteData, ref bool __result)

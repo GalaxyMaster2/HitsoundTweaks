@@ -12,7 +12,7 @@ namespace HitsoundTweaks.HarmonyPatches
      * This is likely intentional to keep hitsounds from cutting out entirely with the limited number of virtual voices available by default
      * When the number of virtual voices is raised, it makes more sense to re-enable this check by setting the limit just below the number of virtual voices
      */
-    [HarmonyPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
+    [HarmonyPatch(typeof(NoteCutSoundEffectManager), "HandleNoteWasSpawned")]
     internal class NoteCutSoundEffectManager_Max_Active_SoundEffects_Patch
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
