@@ -22,7 +22,7 @@ namespace HitsoundTweaks.HarmonyPatches
             {
                 if (code[i + 7].opcode == OpCodes.Ldc_R4 && (float)code[i + 7].operand == 0.001f)
                 {
-                    // 21 NOP instructions wheeeeeeeeee
+                    // 22 NOP instructions wheeeeeeeeee
                     for (int j = 0; j < 22; j++)
                     {
                         code[i + j].opcode = OpCodes.Nop;
@@ -68,14 +68,13 @@ namespace HitsoundTweaks.HarmonyPatches
                 {
                     reduceVolume = true;
 
-                    // I'm not sure if this is intentional, or it was supposed to be *= instead
-                    // but this is how the base game does it
-                    ____prevNoteBSoundEffect.volumeMultiplier = 0.9f;
+                    // base game does = but *= makes more sense, especially with chain hitsounds
+                    ____prevNoteBSoundEffect.volumeMultiplier *= 0.9f;
                 }
                 else if (noteData.colorType == ColorType.ColorB && ____prevNoteASoundEffect != null && ____prevNoteASoundEffect.enabled)
                 {
                     reduceVolume = true;
-                    ____prevNoteASoundEffect.volumeMultiplier = 0.9f;
+                    ____prevNoteASoundEffect.volumeMultiplier *= 0.9f;
                 }
             }
 

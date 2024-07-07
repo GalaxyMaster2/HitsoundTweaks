@@ -12,7 +12,7 @@ namespace HitsoundTweaks.HarmonyPatches
      * 2. AudioSource priorities are not managed very smoothly, which gives Unity little time to sort things out, leading to hitsounds cutting out, not playing, etc.
      *    This reworks priority assignment to smoothly scale priorities based on time relative to the note it's meant for, which greatly improves reliability
      */
-    [HarmonyPatch(typeof(NoteCutSoundEffect), "LateUpdate")]
+    [HarmonyPatch(typeof(NoteCutSoundEffect), "OnLateUpdate")]
     internal class Hitsound_Reliability_Patches
     {
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
