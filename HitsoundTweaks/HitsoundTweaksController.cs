@@ -1,4 +1,5 @@
 ﻿using BeatSaberMarkupLanguage.Settings;
+using BeatSaberMarkupLanguage.Util;
 using HarmonyLib;
 using HitsoundTweaks.Configuration;
 using UnityEngine;
@@ -64,8 +65,8 @@ namespace HitsoundTweaks
             var harmony = new Harmony("com.galaxymaster.hitsoundtweaks");
             harmony.PatchAll();
 
-            BSMLSettings.instance.AddSettingsMenu("HitsoundTweaks", "HitsoundTweaks.UI.ModSettingsView.bsml", PluginConfig.Instance);
-
+            MainMenuAwaiter.MainMenuInitializing += AddSettingsMenuOnMenuInitialized;
+            
             Plugin.Log?.Debug($"{name}: Awake()");
         }
 
@@ -80,5 +81,10 @@ namespace HitsoundTweaks
 
         }
         #endregion
+        
+        private static void AddSettingsMenuOnMenuInitialized()
+        {
+            BSMLSettings.Instance.AddSettingsMenu("HitsoundTweaks", "HitsoundTweaks.UI.ModSettingsView.bsml", PluginConfig.Instance);
+        }
     }
 }
