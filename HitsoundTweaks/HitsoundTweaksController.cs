@@ -14,7 +14,10 @@ namespace HitsoundTweaks
     {
         public static HitsoundTweaksController Instance { get; private set; }
 
-        public static int CurrentNumVirtualVoices = 32;
+        private const int NumVirtualVoices = 128;
+        private const int NumRealVoices = 64;
+        
+        public static int CurrentNumVirtualVoices { get; private set; } = 32;
 
         #region Monobehaviour Messages
         /// <summary>
@@ -33,39 +36,10 @@ namespace HitsoundTweaks
             GameObject.DontDestroyOnLoad(this); // Don't destroy this object on scene changes
             Instance = this;
 
-            var config = AudioSettings.GetConfiguration();
-            config.numVirtualVoices = 128;
-            config.numRealVoices = 64;
-            Plugin.Log?.Info($"Attempting to set number of virtual voices to {config.numVirtualVoices}");
-            Plugin.Log?.Info($"Attempting to set number of real voices to {config.numRealVoices}");
-            AudioSettings.Reset(config);
-            var newConfig = AudioSettings.GetConfiguration();
-            CurrentNumVirtualVoices = newConfig.numVirtualVoices;
-
-            if (newConfig.numVirtualVoices == config.numVirtualVoices)
-            {
-                Plugin.Log?.Info($"Successfully set number of virtual voices");
-            }
-            else
-            {
-                Plugin.Log?.Warn($"Failed to set number of virtual voices to the desired value");
-                Plugin.Log?.Info($"Number of virtual voices is currently: {CurrentNumVirtualVoices}");
-            }
-
-            if (newConfig.numRealVoices == config.numRealVoices)
-            {
-                Plugin.Log?.Info($"Successfully set number of real voices");
-            }
-            else
-            {
-                Plugin.Log?.Warn($"Failed to set number of real voices to the desired value");
-                Plugin.Log?.Info($"Number of real voices is currently: {newConfig.numRealVoices}");
-            }
-
             var harmony = new Harmony("com.galaxymaster.hitsoundtweaks");
             harmony.PatchAll();
 
-            MainMenuAwaiter.MainMenuInitializing += AddSettingsMenuOnMenuInitialized;
+            MainMenuAwaiter.MainMenuInitializing += OnMainMenuInitialized;
             
             Plugin.Log?.Debug($"{name}: Awake()");
         }
@@ -82,9 +56,43 @@ namespace HitsoundTweaks
         }
         #endregion
         
-        private static void AddSettingsMenuOnMenuInitialized()
+        private static void OnMainMenuInitialized()
         {
             BSMLSettings.Instance.AddSettingsMenu("HitsoundTweaks", "HitsoundTweaks.UI.ModSettingsView.bsml", PluginConfig.Instance);
+            
+            SetVoices(NumVirtualVoices, NumRealVoices);
+        }
+
+        private static void SetVoices(int numVirtualVoices, int numRealVoices)
+        {
+            var config = AudioSettings.GetConfiguration();
+            config.numVirtualVoices = numVirtualVoices;
+            config.numRealVoices = numRealVoices;
+            Plugin.Log?.Info($"Attempting to set number of virtual voices to {numVirtualVoices}");
+            Plugin.Log?.Info($"Attempting to set number of real voices to {numRealVoices}");
+            AudioSettings.Reset(config);             
+            var newConfig = AudioSettings.GetConfiguration();
+            CurrentNumVirtualVoices = newConfig.numVirtualVoices;
+
+            if (newConfig.numVirtualVoices == numVirtualVoices)
+            {
+                Plugin.Log?.Info($"Successfully set number of virtual voices");
+            }
+            else
+            {
+                Plugin.Log?.Warn($"Failed to set number of virtual voices to the desired value");
+                Plugin.Log?.Info($"Number of virtual voices is currently: {CurrentNumVirtualVoices}");
+            }
+
+            if (newConfig.numRealVoices == numRealVoices)
+            {
+                Plugin.Log?.Info($"Successfully set number of real voices");
+            }
+            else
+            {
+                Plugin.Log?.Warn($"Failed to set number of real voices to the desired value");
+                Plugin.Log?.Info($"Number of real voices is currently: {newConfig.numRealVoices}");
+            }
         }
     }
 }
