@@ -1,10 +1,8 @@
-using JetBrains.Annotations;
 using UnityEngine;
 using Zenject;
 
 namespace HitsoundTweaks;
 
-[UsedImplicitly]
 public class AudioSettingsVoicesManager : IInitializable
 {
     private const int NumVirtualVoices = 128;
