@@ -1,48 +1,49 @@
 ﻿using HitsoundTweaks.Configuration;
 using SiraUtil.Affinity;
 
-namespace HitsoundTweaks.HarmonyPatches;
-
-/*
- * By default, hitsounds are not played for chain elements
- * These patches enable them and apply a volume multiplier based on config values
- */
-internal class NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch : IAffinity
+namespace HitsoundTweaks.HarmonyPatches
 {
-    private readonly PluginConfig config;
+    /*
+     * By default, hitsounds are not played for chain elements
+     * These patches enable them and apply a volume multiplier based on config values
+     */
+    internal class NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch : IAffinity
+    {
+        private readonly PluginConfig _config;
 
-    private NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch(PluginConfig config)
-    {
-        this.config = config;
-    }
-        
-    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.IsSupportedNote))]
-    private void Postfix(NoteData noteData, ref bool __result)
-    {
-        if (noteData.gameplayType == NoteData.GameplayType.BurstSliderElement && noteData.colorType != ColorType.None)
+        private NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch(PluginConfig config)
         {
-            __result = config.EnableChainElementHitsounds;
+            _config = config;
+        }
+        
+        [AffinityPatch(typeof(NoteCutSoundEffectManager), "IsSupportedNote")]
+        private void Postfix(NoteData noteData, ref bool __result)
+        {
+            if (noteData.gameplayType == NoteData.GameplayType.BurstSliderElement && noteData.colorType != ColorType.None)
+            {
+                __result = _config.EnableChainElementHitsounds;
+            }
         }
     }
-}
 
-internal class NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch : IAffinity
-{
-    private readonly PluginConfig config;
+    internal class NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch : IAffinity
+    {
+        private readonly PluginConfig _config;
 
-    private NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch(PluginConfig config)
-    {
-        this.config = config;
-    }
-        
-    [AffinityPrefix]
-    [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
-    private void Prefix(ref float volumeMultiplier, NoteController noteController)
-    {
-        // apply chain element volume multiplier
-        if (noteController.noteData.gameplayType == NoteData.GameplayType.BurstSliderElement)
+        private NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch(PluginConfig config)
         {
-            volumeMultiplier *= config.ChainElementVolumeMultiplier;
+            _config = config;
+        }
+        
+        [AffinityPrefix]
+        [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
+        private void Prefix(ref float volumeMultiplier, NoteController noteController)
+        {
+            // apply chain element volume multiplier
+            if (noteController.noteData.gameplayType == NoteData.GameplayType.BurstSliderElement)
+            {
+                volumeMultiplier *= _config.ChainElementVolumeMultiplier;
+            }
         }
     }
 }

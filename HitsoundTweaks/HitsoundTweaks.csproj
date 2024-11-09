@@ -138,6 +138,7 @@
   <ItemGroup>
     <Compile Include="AudioSettingsVoicesManager.cs" />
     <Compile Include="AudioSettingsVoicesTweaks.cs" />
+    <Compile Include="HarmonyPatchController.cs" />
     <Compile Include="HarmonyPatches\AudioTimeSyncController_dspTimeOffset_Patch.cs" />
     <Compile Include="HarmonyPatches\Chain_Element_Hitsound_Patch.cs" />
     <Compile Include="HarmonyPatches\Hitsound_Reliability_Patches.cs" />
@@ -146,10 +147,13 @@
     <Compile Include="HarmonyPatches\NoteCutSoundEffect_Misc_Patches.cs" />
     <Compile Include="HarmonyPatches\NoteCutSoundEffect_Random_Pitch_Patch.cs" />
     <Compile Include="HarmonyPatches\NoteCutSoundEffect_Transform_Position_Patch.cs" />
+    <Compile Include="Installers\AppInstaller.cs" />
+    <Compile Include="Installers\MenuInstaller.cs" />
+    <Compile Include="Installers\PlayerInstaller.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
-    <Compile Include="HitsoundTweaksController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\SettingsMenuManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />

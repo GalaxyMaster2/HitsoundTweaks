@@ -3,28 +3,29 @@ using HitsoundTweaks.Configuration;
 using SiraUtil.Affinity;
 using UnityEngine;
 
-namespace HitsoundTweaks.HarmonyPatches;
-
-/*
- * This enables configuration for ignoring saber speed, and enabling/disabling hitsound spatialization
- */
-internal class NoteCutSoundEffect_Misc_Patches : IAffinity
+namespace HitsoundTweaks.HarmonyPatches
 {
-    private readonly PluginConfig config;
-
-    private NoteCutSoundEffect_Misc_Patches(PluginConfig config)
+    /*
+     * This enables configuration for ignoring saber speed, and enabling/disabling hitsound spatialization
+     */
+    internal class NoteCutSoundEffect_Misc_Patches : IAffinity
     {
-        this.config = config;
-    }
+        private readonly PluginConfig _config;
+
+        private NoteCutSoundEffect_Misc_Patches(PluginConfig config)
+        {
+            _config = config;
+        }
         
-    [AffinityPrefix]
-    [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
-    private void Prefix(ref bool ignoreSaberSpeed, AudioSource ____audioSource)
-    {
-        // if true, always play hitsounds even if saber isn't moving
-        ignoreSaberSpeed = config.IgnoreSaberSpeed;
+        [AffinityPrefix]
+        [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
+        private void Prefix(ref bool ignoreSaberSpeed, AudioSource ____audioSource)
+        {
+            // if true, always play hitsounds even if saber isn't moving
+            ignoreSaberSpeed = _config.IgnoreSaberSpeed;
 
-        // enable/disable spatialization
-        ____audioSource.spatialize = config.EnableSpatialization;
+            // enable/disable spatialization
+            ____audioSource.spatialize = _config.EnableSpatialization;
+        }
     }
 }
