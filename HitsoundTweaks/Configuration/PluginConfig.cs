@@ -7,8 +7,6 @@ namespace HitsoundTweaks.Configuration
 {
     internal class PluginConfig
     {
-        public static PluginConfig Instance { get; set; }
-
         [UIValue("ignore-saber-speed")]
         public virtual bool IgnoreSaberSpeed { get; set; } = false;
 

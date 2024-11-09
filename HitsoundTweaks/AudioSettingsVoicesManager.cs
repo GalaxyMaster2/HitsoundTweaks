@@ -9,14 +9,15 @@ public class AudioSettingsVoicesManager : IInitializable
 {
     private const int NumVirtualVoices = 128;
     private const int NumRealVoices = 64;
-
+    
+    public int CurrentNumVirtualVoices { get; private set; } = AudioSettings.GetConfiguration().numVirtualVoices;
+    
     public void Initialize()
     {
         AudioSettingsVoicesTweaks.SetVoices(NumVirtualVoices, NumRealVoices);
-
         var newConfig = AudioSettings.GetConfiguration();
 
-        Plugin.CurrentNumVirtualVoices = newConfig.numVirtualVoices;
+        CurrentNumVirtualVoices = newConfig.numVirtualVoices;
 
         if (newConfig.numVirtualVoices == NumVirtualVoices)
         {
@@ -25,7 +26,7 @@ public class AudioSettingsVoicesManager : IInitializable
         else
         {
             Plugin.Log.Warn($"Failed to set number of virtual voices to the desired value");
-            Plugin.Log.Info($"Number of virtual voices is currently: {Plugin.CurrentNumVirtualVoices}");
+            Plugin.Log.Info($"Number of virtual voices is currently: {CurrentNumVirtualVoices}");
         }
 
         if (newConfig.numRealVoices == NumRealVoices)
