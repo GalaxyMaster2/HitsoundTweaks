@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using SiraUtil.Affinity;
 using UnityEngine;
+using Zenject;
 
 namespace HitsoundTweaks.HarmonyPatches
 {
@@ -12,10 +14,11 @@ namespace HitsoundTweaks.HarmonyPatches
      * This is likely intentional to keep hitsounds from cutting out entirely with the limited number of virtual voices available by default
      * When the number of virtual voices is raised, it makes more sense to re-enable this check by setting the limit just below the number of virtual voices
      */
-    [HarmonyPatch(typeof(NoteCutSoundEffectManager), "HandleNoteWasSpawned")]
-    internal class NoteCutSoundEffectManager_Max_Active_SoundEffects_Patch
+    internal class NoteCutSoundEffectManager_Max_Active_SoundEffects_Patch : IAffinity
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        [AffinityTranspiler]
+        [AffinityPatch(typeof(NoteCutSoundEffectManager), "HandleNoteWasSpawned")]
+        private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var code = new List<CodeInstruction>(instructions);
 
@@ -25,7 +28,7 @@ namespace HitsoundTweaks.HarmonyPatches
                 if (code[i].opcode == OpCodes.Callvirt && (MethodInfo)code[i].operand == AccessTools.PropertyGetter(typeof(List<NoteCutSoundEffect>), "Count"))
                 {
                     // subtract 8 to give some overhead, don't go below base game value of 64
-                    code[i + 1].operand = Mathf.Max(HitsoundTweaksController.CurrentNumVirtualVoices - 8, 64);
+                    code[i + 1].operand = Mathf.Max(Plugin.CurrentNumVirtualVoices - 8, 64);
                     break;
                 }
             }
