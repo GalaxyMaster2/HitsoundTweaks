@@ -1,5 +1,5 @@
-﻿using HarmonyLib;
-using HitsoundTweaks.Configuration;
+﻿using HitsoundTweaks.Configuration;
+using SiraUtil.Affinity;
 
 namespace HitsoundTweaks.HarmonyPatches
 {
@@ -7,27 +7,42 @@ namespace HitsoundTweaks.HarmonyPatches
      * By default, hitsounds are not played for chain elements
      * These patches enable them and apply a volume multiplier based on config values
      */
-    [HarmonyPatch(typeof(NoteCutSoundEffectManager), "IsSupportedNote")]
-    internal class NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch
+    internal class NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch : IAffinity
     {
-        static void Postfix(NoteData noteData, ref bool __result)
+        private readonly PluginConfig _config;
+
+        private NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch(PluginConfig config)
+        {
+            _config = config;
+        }
+        
+        [AffinityPatch(typeof(NoteCutSoundEffectManager), "IsSupportedNote")]
+        private void Postfix(NoteData noteData, ref bool __result)
         {
             if (noteData.gameplayType == NoteData.GameplayType.BurstSliderElement && noteData.colorType != ColorType.None)
             {
-                __result = PluginConfig.Instance.EnableChainElementHitsounds;
+                __result = _config.EnableChainElementHitsounds;
             }
         }
     }
 
-    [HarmonyPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
-    internal class NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch
+    internal class NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch : IAffinity
     {
-        static void Prefix(ref float volumeMultiplier, NoteController noteController)
+        private readonly PluginConfig _config;
+
+        private NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch(PluginConfig config)
+        {
+            _config = config;
+        }
+        
+        [AffinityPrefix]
+        [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
+        private void Prefix(ref float volumeMultiplier, NoteController noteController)
         {
             // apply chain element volume multiplier
             if (noteController.noteData.gameplayType == NoteData.GameplayType.BurstSliderElement)
             {
-                volumeMultiplier *= PluginConfig.Instance.ChainElementVolumeMultiplier;
+                volumeMultiplier *= _config.ChainElementVolumeMultiplier;
             }
         }
     }

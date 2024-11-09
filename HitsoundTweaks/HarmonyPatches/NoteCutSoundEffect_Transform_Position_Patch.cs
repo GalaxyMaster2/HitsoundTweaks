@@ -3,6 +3,7 @@ using HitsoundTweaks.Configuration;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using SiraUtil.Affinity;
 using UnityEngine;
 
 namespace HitsoundTweaks.HarmonyPatches
@@ -11,10 +12,18 @@ namespace HitsoundTweaks.HarmonyPatches
      * These patches allow the user to configure whether or not the spatialized hitsound should follow the sabers
      * If disabled, the hitsound will always play at the player's feet
      */
-    [HarmonyPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.NoteWasCut))]
-    internal class NoteCutSoundEffect_Transform_Position_NoteWasCut_Patch
+    internal class NoteCutSoundEffect_Transform_Position_NoteWasCut_Patch : IAffinity
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        private readonly PluginConfig _config;
+
+        private NoteCutSoundEffect_Transform_Position_NoteWasCut_Patch(PluginConfig config)
+        {
+            _config = config;
+        }
+        
+        [AffinityTranspiler]
+        [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.NoteWasCut))]
+        private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var code = new List<CodeInstruction>(instructions);
 
@@ -35,7 +44,9 @@ namespace HitsoundTweaks.HarmonyPatches
         }
 
         // set transform position if desired
-        static void Postfix(NoteCutSoundEffect __instance, AudioSource ____audioSource, NoteController ____noteController, bool ____goodCut, NoteController noteController, in NoteCutInfo noteCutInfo)
+        [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.NoteWasCut))]
+        private void Postfix(NoteCutSoundEffect __instance, AudioSource ____audioSource, NoteController 
+            ____noteController, bool ____goodCut, NoteController noteController, in NoteCutInfo noteCutInfo)
         {
             if (____noteController != noteController)
             {
@@ -49,17 +60,25 @@ namespace HitsoundTweaks.HarmonyPatches
                 return;
             }
 
-            if (!PluginConfig.Instance.StaticSoundPos && ____audioSource.spatialize)
+            if (!_config.StaticSoundPos && ____audioSource.spatialize)
             {
                 __instance.transform.position = noteCutInfo.cutPoint;
             }
         }
     }
 
-    [HarmonyPatch(typeof(NoteCutSoundEffect), "OnLateUpdate")]
-    internal class NoteCutSoundEffect_Transform_Position_LateUpdate_Patch
+    internal class NoteCutSoundEffect_Transform_Position_LateUpdate_Patch : IAffinity
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        private readonly PluginConfig _config;
+
+        private NoteCutSoundEffect_Transform_Position_LateUpdate_Patch(PluginConfig config)
+        {
+            _config = config;
+        }
+        
+        [AffinityTranspiler]
+        [AffinityPatch(typeof(NoteCutSoundEffect), "OnLateUpdate")]
+        private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var code = new List<CodeInstruction>(instructions);
 
@@ -79,21 +98,31 @@ namespace HitsoundTweaks.HarmonyPatches
 
             return code;
         }
-
-        static void Postfix(bool ____noteWasCut, Saber ____saber, AudioSource ____audioSource, NoteCutSoundEffect __instance)
+        
+        [AffinityPatch(typeof(NoteCutSoundEffect), "OnLateUpdate")]
+        private void Postfix(bool ____noteWasCut, Saber ____saber, AudioSource ____audioSource, NoteCutSoundEffect 
+            __instance)
         {
             // set transform position if desired
-            if (!____noteWasCut && !PluginConfig.Instance.StaticSoundPos && ____audioSource.spatialize)
+            if (!____noteWasCut && !_config.StaticSoundPos && ____audioSource.spatialize)
             {
                 __instance.transform.position = ____saber.saberBladeTopPos;
             }
         }
     }
 
-    [HarmonyPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
-    internal class NoteCutSoundEffect_Transform_Position_Init_Patch
+    internal class NoteCutSoundEffect_Transform_Position_Init_Patch : IAffinity
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        private readonly PluginConfig _config;
+
+        public NoteCutSoundEffect_Transform_Position_Init_Patch(PluginConfig config)
+        {
+            _config = config;
+        }
+        
+        [AffinityTranspiler]
+        [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
+        private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var code = new List<CodeInstruction>(instructions);
 
@@ -111,10 +140,11 @@ namespace HitsoundTweaks.HarmonyPatches
             return code;
         }
 
-        static void Postfix(Saber saber, AudioSource ____audioSource, NoteCutSoundEffect __instance)
+        [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
+        private void Postfix(Saber saber, AudioSource ____audioSource, NoteCutSoundEffect __instance)
         {
             // not sure how necessary this is, but since the game does it I might as well too
-            if (!PluginConfig.Instance.StaticSoundPos && ____audioSource.spatialize)
+            if (!_config.StaticSoundPos && ____audioSource.spatialize)
             {
                 __instance.transform.position = saber.saberBladeTopPos;
             }

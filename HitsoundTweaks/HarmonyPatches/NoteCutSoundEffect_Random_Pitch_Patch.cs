@@ -3,6 +3,7 @@ using HitsoundTweaks.Configuration;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using SiraUtil.Affinity;
 using UnityEngine;
 
 namespace HitsoundTweaks.HarmonyPatches
@@ -11,10 +12,18 @@ namespace HitsoundTweaks.HarmonyPatches
      * This patch allows you to configure the range used for the randomized pitch of hitsounds
      * Also fixes a bug in the game where the sfxLatency is incorrectly scaled by pitch
      */
-    [HarmonyPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
-    internal class NoteCutSoundEffect_Random_Pitch_Patch
+    internal class NoteCutSoundEffect_Random_Pitch_Patch : IAffinity
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        private readonly PluginConfig _config;
+
+        private NoteCutSoundEffect_Random_Pitch_Patch(PluginConfig config)
+        {
+            _config = config;
+        }
+        
+        [AffinityTranspiler]
+        [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
+        private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var code = new List<CodeInstruction>(instructions);
 
@@ -35,15 +44,17 @@ namespace HitsoundTweaks.HarmonyPatches
             return code;
         }
 
-        static void Prefix(ref float aheadTime, ref float ____pitch)
+        [AffinityPrefix]
+        [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
+        private void Prefix(ref float aheadTime, ref float ____pitch)
         {
             // generate random pitch in the desired range
-            var randomPitch = Random.Range(PluginConfig.Instance.RandomPitchMin, PluginConfig.Instance.RandomPitchMax);
+            var randomPitch = Random.Range(_config.RandomPitchMin, _config.RandomPitchMax);
 
             // fix broken pitch correction for hitsound alignment
             // - the game scales both the alignment offset and the sfx latency combined, while it should only scale the alignment offset
             const float hitsoundAlignOffset = 0.185f;
-            var sfxLatency = PluginConfig.Instance.EnableSpatialization ? aheadTime - hitsoundAlignOffset : 0f;
+            var sfxLatency = _config.EnableSpatialization ? aheadTime - hitsoundAlignOffset : 0f;
             ____pitch = randomPitch;
             aheadTime = (hitsoundAlignOffset / randomPitch + sfxLatency) * randomPitch;
         }
