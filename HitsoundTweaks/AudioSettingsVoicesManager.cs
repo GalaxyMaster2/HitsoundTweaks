@@ -1,28 +1,22 @@
+using JetBrains.Annotations;
 using UnityEngine;
 using Zenject;
 
 namespace HitsoundTweaks;
 
+[UsedImplicitly]
 public class AudioSettingsVoicesManager : IInitializable
 {
     private const int NumVirtualVoices = 128;
     private const int NumRealVoices = 64;
-    
-    public int CurrentNumVirtualVoices { get; private set; } = AudioSettings.GetConfiguration().numVirtualVoices;
-    
+
     public void Initialize()
     {
-        Plugin.Log.Debug($"Attempting to set number of virtual voices to {NumVirtualVoices}");
-        Plugin.Log.Debug($"Attempting to set number of real voices to {NumRealVoices}");
+        AudioSettingsVoicesTweaks.SetVoices(NumVirtualVoices, NumRealVoices);
 
-        AudioSettings.Reset(AudioSettings.GetConfiguration() with
-        {
-            numVirtualVoices = NumVirtualVoices,
-            numRealVoices = NumRealVoices
-        });    
-        
         var newConfig = AudioSettings.GetConfiguration();
-        CurrentNumVirtualVoices = newConfig.numVirtualVoices;
+
+        Plugin.CurrentNumVirtualVoices = newConfig.numVirtualVoices;
 
         if (newConfig.numVirtualVoices == NumVirtualVoices)
         {
@@ -31,7 +25,7 @@ public class AudioSettingsVoicesManager : IInitializable
         else
         {
             Plugin.Log.Warn($"Failed to set number of virtual voices to the desired value");
-            Plugin.Log.Info($"Number of virtual voices is currently: {CurrentNumVirtualVoices}");
+            Plugin.Log.Info($"Number of virtual voices is currently: {Plugin.CurrentNumVirtualVoices}");
         }
 
         if (newConfig.numRealVoices == NumRealVoices)
