@@ -77,7 +77,7 @@ internal class NoteCutSoundEffect_Transform_Position_LateUpdate_Patch : IAffinit
     }
         
     [AffinityTranspiler]
-    [AffinityPatch(typeof(NoteCutSoundEffect), "OnLateUpdate")]
+    [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.OnLateUpdate))]
     private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var code = new List<CodeInstruction>(instructions);
@@ -99,7 +99,7 @@ internal class NoteCutSoundEffect_Transform_Position_LateUpdate_Patch : IAffinit
         return code;
     }
         
-    [AffinityPatch(typeof(NoteCutSoundEffect), "OnLateUpdate")]
+    [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.OnLateUpdate))]
     private void Postfix(bool ____noteWasCut, Saber ____saber, AudioSource ____audioSource, NoteCutSoundEffect 
         __instance)
     {
