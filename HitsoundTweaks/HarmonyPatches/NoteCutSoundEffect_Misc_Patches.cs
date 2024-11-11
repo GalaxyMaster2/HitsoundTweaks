@@ -10,11 +10,11 @@ namespace HitsoundTweaks.HarmonyPatches
      */
     internal class NoteCutSoundEffect_Misc_Patches : IAffinity
     {
-        private readonly PluginConfig _config;
+        private readonly PluginConfig config;
 
         private NoteCutSoundEffect_Misc_Patches(PluginConfig config)
         {
-            _config = config;
+            this.config = config;
         }
         
         [AffinityPrefix]
@@ -22,10 +22,10 @@ namespace HitsoundTweaks.HarmonyPatches
         private void Prefix(ref bool ignoreSaberSpeed, AudioSource ____audioSource)
         {
             // if true, always play hitsounds even if saber isn't moving
-            ignoreSaberSpeed = _config.IgnoreSaberSpeed;
+            ignoreSaberSpeed = config.IgnoreSaberSpeed;
 
             // enable/disable spatialization
-            ____audioSource.spatialize = _config.EnableSpatialization;
+            ____audioSource.spatialize = config.EnableSpatialization;
         }
     }
 }
