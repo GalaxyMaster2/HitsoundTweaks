@@ -1,5 +1,4 @@
-﻿using HarmonyLib;
-using HitsoundTweaks.Configuration;
+﻿using HitsoundTweaks.Configuration;
 using SiraUtil.Affinity;
 using UnityEngine;
 

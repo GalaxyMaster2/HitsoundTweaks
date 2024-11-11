@@ -1,5 +1,4 @@
 using HitsoundTweaks.Configuration;
-using HitsoundTweaks.HarmonyPatches;
 using Zenject;
 
 namespace HitsoundTweaks.Installers;

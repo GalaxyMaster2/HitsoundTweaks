@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using SiraUtil.Affinity;
 using UnityEngine;
-using Zenject;
 
 namespace HitsoundTweaks.HarmonyPatches;
 

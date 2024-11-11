@@ -5,7 +5,6 @@ using IPA;
 using IPA.Config;
 using IPA.Config.Stores;
 using SiraUtil.Zenject;
-using UnityEngine;
 using IPALogger = IPA.Logging.Logger;
 
 namespace HitsoundTweaks;
@@ -14,7 +13,7 @@ namespace HitsoundTweaks;
 public class Plugin
 {
     internal static IPALogger Log { get; private set; }
-    internal static Assembly ExecutingAssembly = Assembly.GetExecutingAssembly();
+    internal static Assembly ExecutingAssembly { get; } = Assembly.GetExecutingAssembly();
 
     [Init]
     /// <summary>
