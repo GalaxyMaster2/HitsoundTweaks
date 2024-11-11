@@ -10,7 +10,7 @@ namespace HitsoundTweaks.HarmonyPatches;
  * Chain elements and heads can be spawned out of order, which can cause hitsounds to be skipped if chain element hitsounds are enabled
  * By making the time proximity check use an absolute value, we mitigate this issue
  */
-[HarmonyPatch(typeof(NoteCutSoundEffectManager), "HandleNoteWasSpawned")]
+[HarmonyPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
 internal class NoteCutSoundEffectManager_Proximity_Check_Patch
 {
     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
