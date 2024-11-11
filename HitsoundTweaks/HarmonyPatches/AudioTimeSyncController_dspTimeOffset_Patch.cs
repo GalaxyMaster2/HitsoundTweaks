@@ -5,20 +5,20 @@ using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 
-namespace HitsoundTweaks.HarmonyPatches
+namespace HitsoundTweaks.HarmonyPatches;
+
+/*
+ * For some reason, either the dspTime or the AudioSource time doesn't behave as it should, resulting in the _dspTimeOffset field oscillating between 2 values
+ * This causes hitsound timings to be irregular, which is audible to the player
+ * To fix this, we patch out the _dspTimeOffset update, and reimplement it to be a cumulative average of the target offset calculated each frame
+ * This reliably and consistently gets within a handful of audio samples after a few seconds, which is for all intents and purposes good enough
+ */
+[HarmonyPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.Update))]
+internal class AudioTimeSyncController_dspTimeOffset_Patch
 {
-    /*
-     * For some reason, either the dspTime or the AudioSource time doesn't behave as it should, resulting in the _dspTimeOffset field oscillating between 2 values
-     * This causes hitsound timings to be irregular, which is audible to the player
-     * To fix this, we patch out the _dspTimeOffset update, and reimplement it to be a cumulative average of the target offset calculated each frame
-     * This reliably and consistently gets within a handful of audio samples after a few seconds, which is for all intents and purposes good enough
-     */
-    [HarmonyPatch(typeof(AudioTimeSyncController), "Update")]
-    internal class AudioTimeSyncController_dspTimeOffset_Patch
+    static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            var code = new List<CodeInstruction>(instructions);
+        var code = new List<CodeInstruction>(instructions);
 
             // remove _dspTimeOffset update
             var skip = true;

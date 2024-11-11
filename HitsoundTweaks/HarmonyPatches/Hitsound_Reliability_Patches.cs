@@ -4,20 +4,20 @@ using System.Reflection;
 using System.Reflection.Emit;
 using UnityEngine;
 
-namespace HitsoundTweaks.HarmonyPatches
+namespace HitsoundTweaks.HarmonyPatches;
+
+/*
+ * This makes 2 changes to make hitsounds play more reliably
+ * 1. Scheduling playback silently fails when there are no virtual voices available. To alleviate this, we retry scheduling playback just ahead of time.
+ * 2. AudioSource priorities are not managed very smoothly, which gives Unity little time to sort things out, leading to hitsounds cutting out, not playing, etc.
+ *    This reworks priority assignment to smoothly scale priorities based on time relative to the note it's meant for, which greatly improves reliability
+ */
+[HarmonyPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.OnLateUpdate))]
+internal class Hitsound_Reliability_Patches
 {
-    /*
-     * This makes 2 changes to make hitsounds play more reliably
-     * 1. Scheduling playback silently fails when there are no virtual voices available. To alleviate this, we retry scheduling playback just ahead of time.
-     * 2. AudioSource priorities are not managed very smoothly, which gives Unity little time to sort things out, leading to hitsounds cutting out, not playing, etc.
-     *    This reworks priority assignment to smoothly scale priorities based on time relative to the note it's meant for, which greatly improves reliability
-     */
-    [HarmonyPatch(typeof(NoteCutSoundEffect), "OnLateUpdate")]
-    internal class Hitsound_Reliability_Patches
+    static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            var code = new List<CodeInstruction>(instructions);
+        var code = new List<CodeInstruction>(instructions);
 
             // disable setting audio source priority
             for (int i = 0; i < code.Count - 3; i++)

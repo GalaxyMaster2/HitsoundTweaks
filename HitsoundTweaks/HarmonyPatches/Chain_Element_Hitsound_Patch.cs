@@ -10,14 +10,18 @@ namespace HitsoundTweaks.HarmonyPatches
     [HarmonyPatch(typeof(NoteCutSoundEffectManager), "IsSupportedNote")]
     internal class NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch
     {
-        static void Postfix(NoteData noteData, ref bool __result)
+        this.config = config;
+    }
+        
+    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.IsSupportedNote))]
+    private void Postfix(NoteData noteData, ref bool __result)
+    {
+        if (noteData.gameplayType == NoteData.GameplayType.BurstSliderElement && noteData.colorType != ColorType.None)
         {
-            if (noteData.gameplayType == NoteData.GameplayType.BurstSliderElement && noteData.colorType != ColorType.None)
-            {
-                __result = PluginConfig.Instance.EnableChainElementHitsounds;
-            }
+            __result = config.EnableChainElementHitsounds;
         }
     }
+}
 
     [HarmonyPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
     internal class NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch
