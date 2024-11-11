@@ -13,7 +13,7 @@ namespace HitsoundTweaks.HarmonyPatches;
  * To fix this, we patch out the _dspTimeOffset update, and reimplement it to be a cumulative average of the target offset calculated each frame
  * This reliably and consistently gets within a handful of audio samples after a few seconds, which is for all intents and purposes good enough
  */
-[HarmonyPatch(typeof(AudioTimeSyncController), "Update")]
+[HarmonyPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.Update))]
 internal class AudioTimeSyncController_dspTimeOffset_Patch
 {
     static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

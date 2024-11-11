@@ -24,7 +24,7 @@ internal class NoteCutSoundEffectManager_Max_Active_SoundEffects_Patch : IAffini
     }
         
     [AffinityTranspiler]
-    [AffinityPatch(typeof(NoteCutSoundEffectManager), "HandleNoteWasSpawned")]
+    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
     private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var code = new List<CodeInstruction>(instructions);
