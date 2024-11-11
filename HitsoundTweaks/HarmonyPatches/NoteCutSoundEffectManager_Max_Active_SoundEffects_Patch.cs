@@ -16,11 +16,11 @@ namespace HitsoundTweaks.HarmonyPatches
      */
     internal class NoteCutSoundEffectManager_Max_Active_SoundEffects_Patch : IAffinity
     {
-        private readonly AudioSettingsVoicesManager _audioSettingsVoicesManager;
+        private readonly AudioSettingsVoicesManager audioSettingsVoicesManager;
 
         private NoteCutSoundEffectManager_Max_Active_SoundEffects_Patch(AudioSettingsVoicesManager audioSettingsVoicesManager)
         {
-            _audioSettingsVoicesManager = audioSettingsVoicesManager;
+            this.audioSettingsVoicesManager = audioSettingsVoicesManager;
         }
         
         [AffinityTranspiler]
@@ -35,7 +35,7 @@ namespace HitsoundTweaks.HarmonyPatches
                 if (code[i].opcode == OpCodes.Callvirt && (MethodInfo)code[i].operand == AccessTools.PropertyGetter(typeof(List<NoteCutSoundEffect>), "Count"))
                 {
                     // subtract 8 to give some overhead, don't go below base game value of 64
-                    code[i + 1].operand = Mathf.Max(_audioSettingsVoicesManager.CurrentNumVirtualVoices - 8, 64);
+                    code[i + 1].operand = Mathf.Max(audioSettingsVoicesManager.CurrentNumVirtualVoices - 8, 64);
                     break;
                 }
             }
