@@ -16,7 +16,7 @@ internal class NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch : IAffinit
         this.config = config;
     }
         
-    [AffinityPatch(typeof(NoteCutSoundEffectManager), "IsSupportedNote")]
+    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.IsSupportedNote))]
     private void Postfix(NoteData noteData, ref bool __result)
     {
         if (noteData.gameplayType == NoteData.GameplayType.BurstSliderElement && noteData.colorType != ColorType.None)
