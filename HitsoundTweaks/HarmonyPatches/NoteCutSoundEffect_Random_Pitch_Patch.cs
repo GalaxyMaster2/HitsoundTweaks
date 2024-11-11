@@ -14,11 +14,11 @@ namespace HitsoundTweaks.HarmonyPatches
      */
     internal class NoteCutSoundEffect_Random_Pitch_Patch : IAffinity
     {
-        private readonly PluginConfig _config;
+        private readonly PluginConfig config;
 
         private NoteCutSoundEffect_Random_Pitch_Patch(PluginConfig config)
         {
-            _config = config;
+            this.config = config;
         }
         
         [AffinityTranspiler]
@@ -49,12 +49,12 @@ namespace HitsoundTweaks.HarmonyPatches
         private void Prefix(ref float aheadTime, ref float ____pitch)
         {
             // generate random pitch in the desired range
-            var randomPitch = Random.Range(_config.RandomPitchMin, _config.RandomPitchMax);
+            var randomPitch = Random.Range(config.RandomPitchMin, config.RandomPitchMax);
 
             // fix broken pitch correction for hitsound alignment
             // - the game scales both the alignment offset and the sfx latency combined, while it should only scale the alignment offset
             const float hitsoundAlignOffset = 0.185f;
-            var sfxLatency = _config.EnableSpatialization ? aheadTime - hitsoundAlignOffset : 0f;
+            var sfxLatency = config.EnableSpatialization ? aheadTime - hitsoundAlignOffset : 0f;
             ____pitch = randomPitch;
             aheadTime = (hitsoundAlignOffset / randomPitch + sfxLatency) * randomPitch;
         }

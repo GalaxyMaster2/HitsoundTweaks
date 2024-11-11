@@ -9,11 +9,11 @@ namespace HitsoundTweaks.HarmonyPatches
      */
     internal class NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch : IAffinity
     {
-        private readonly PluginConfig _config;
+        private readonly PluginConfig config;
 
         private NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch(PluginConfig config)
         {
-            _config = config;
+            this.config = config;
         }
         
         [AffinityPatch(typeof(NoteCutSoundEffectManager), "IsSupportedNote")]
@@ -21,18 +21,18 @@ namespace HitsoundTweaks.HarmonyPatches
         {
             if (noteData.gameplayType == NoteData.GameplayType.BurstSliderElement && noteData.colorType != ColorType.None)
             {
-                __result = _config.EnableChainElementHitsounds;
+                __result = config.EnableChainElementHitsounds;
             }
         }
     }
 
     internal class NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch : IAffinity
     {
-        private readonly PluginConfig _config;
+        private readonly PluginConfig config;
 
         private NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch(PluginConfig config)
         {
-            _config = config;
+            this.config = config;
         }
         
         [AffinityPrefix]
@@ -42,7 +42,7 @@ namespace HitsoundTweaks.HarmonyPatches
             // apply chain element volume multiplier
             if (noteController.noteData.gameplayType == NoteData.GameplayType.BurstSliderElement)
             {
-                volumeMultiplier *= _config.ChainElementVolumeMultiplier;
+                volumeMultiplier *= config.ChainElementVolumeMultiplier;
             }
         }
     }

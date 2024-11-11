@@ -6,16 +6,16 @@ namespace HitsoundTweaks.Installers;
 
 public class AppInstaller : Installer
 {
-    private readonly PluginConfig _config;
+    private readonly PluginConfig config;
 
     private AppInstaller(PluginConfig config)
     {
-        _config = config;
+        this.config = config;
     }
     
     public override void InstallBindings()
     {
-        Container.BindInstance(_config).AsSingle();
+        Container.BindInstance(config).AsSingle();
         
         Container.BindInterfacesAndSelfTo<AudioSettingsVoicesManager>().AsSingle();
         
