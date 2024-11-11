@@ -14,11 +14,11 @@ namespace HitsoundTweaks.HarmonyPatches
      */
     internal class NoteCutSoundEffect_Transform_Position_NoteWasCut_Patch : IAffinity
     {
-        private readonly PluginConfig _config;
+        private readonly PluginConfig config;
 
         private NoteCutSoundEffect_Transform_Position_NoteWasCut_Patch(PluginConfig config)
         {
-            _config = config;
+            this.config = config;
         }
         
         [AffinityTranspiler]
@@ -60,7 +60,7 @@ namespace HitsoundTweaks.HarmonyPatches
                 return;
             }
 
-            if (!_config.StaticSoundPos && ____audioSource.spatialize)
+            if (!config.StaticSoundPos && ____audioSource.spatialize)
             {
                 __instance.transform.position = noteCutInfo.cutPoint;
             }
@@ -69,11 +69,11 @@ namespace HitsoundTweaks.HarmonyPatches
 
     internal class NoteCutSoundEffect_Transform_Position_LateUpdate_Patch : IAffinity
     {
-        private readonly PluginConfig _config;
+        private readonly PluginConfig config;
 
         private NoteCutSoundEffect_Transform_Position_LateUpdate_Patch(PluginConfig config)
         {
-            _config = config;
+            this.config = config;
         }
         
         [AffinityTranspiler]
@@ -104,7 +104,7 @@ namespace HitsoundTweaks.HarmonyPatches
             __instance)
         {
             // set transform position if desired
-            if (!____noteWasCut && !_config.StaticSoundPos && ____audioSource.spatialize)
+            if (!____noteWasCut && !config.StaticSoundPos && ____audioSource.spatialize)
             {
                 __instance.transform.position = ____saber.saberBladeTopPos;
             }
@@ -113,11 +113,11 @@ namespace HitsoundTweaks.HarmonyPatches
 
     internal class NoteCutSoundEffect_Transform_Position_Init_Patch : IAffinity
     {
-        private readonly PluginConfig _config;
+        private readonly PluginConfig config;
 
         public NoteCutSoundEffect_Transform_Position_Init_Patch(PluginConfig config)
         {
-            _config = config;
+            this.config = config;
         }
         
         [AffinityTranspiler]
@@ -144,7 +144,7 @@ namespace HitsoundTweaks.HarmonyPatches
         private void Postfix(Saber saber, AudioSource ____audioSource, NoteCutSoundEffect __instance)
         {
             // not sure how necessary this is, but since the game does it I might as well too
-            if (!_config.StaticSoundPos && ____audioSource.spatialize)
+            if (!config.StaticSoundPos && ____audioSource.spatialize)
             {
                 __instance.transform.position = saber.saberBladeTopPos;
             }

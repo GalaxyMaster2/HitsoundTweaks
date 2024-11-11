@@ -7,25 +7,25 @@ namespace HitsoundTweaks.UI;
 
 public class SettingsMenuManager : IInitializable, IDisposable
 {
-    private readonly BSMLSettings _bsmlSettings;
-    private readonly PluginConfig _config;
+    private readonly BSMLSettings bsmlSettings;
+    private readonly PluginConfig config;
     
     private const string SettingsMenuName = "HitsoundTweaks";
     private const string ResourcePath = "HitsoundTweaks.UI.ModSettingsView.bsml";
     
     private SettingsMenuManager(BSMLSettings bsmlSettings, PluginConfig config)
     {
-        _bsmlSettings = bsmlSettings;
-        _config = config;
+        this.bsmlSettings = bsmlSettings;
+        this.config = config;
     }
     
     public void Initialize()
     {
-        _bsmlSettings.AddSettingsMenu(SettingsMenuName, ResourcePath, _config);
+        bsmlSettings.AddSettingsMenu(SettingsMenuName, ResourcePath, config);
     }
 
     public void Dispose()
     {
-        _bsmlSettings.RemoveSettingsMenu(SettingsMenuName);
+        bsmlSettings.RemoveSettingsMenu(SettingsMenuName);
     }
 }
