@@ -29,6 +29,6 @@ public class Plugin
 
         zenjector.Install<AppInstaller>(Location.App, pluginConfig);
         zenjector.Install<MenuInstaller>(Location.Menu);
-        zenjector.Install<PlayerInstaller>(Location.Player);
+        zenjector.Install<PlayerInstaller>(Location.Player, Location.Tutorial);
     }
 }
