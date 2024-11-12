@@ -9,10 +9,13 @@ using UnityEngine;
 namespace HitsoundTweaks.HarmonyPatches;
 
 /*
- * For some reason, either the dspTime or the AudioSource time doesn't behave as it should, resulting in the _dspTimeOffset field oscillating between 2 values
+ * For some reason, either the dspTime or the AudioSource time doesn't behave as it should, resulting in the _dspTimeOffset field oscillating between several discrete values
  * This causes hitsound timings to be irregular, which is audible to the player
- * To fix this, we patch out the _dspTimeOffset update, and reimplement it to be a cumulative average of the target offset calculated each frame
- * This reliably and consistently gets within a handful of audio samples after a few seconds, which is for all intents and purposes good enough
+ * To fix this, we patch out the _dspTimeOffset update, and reimplement it to follow a cumulative average of the target offset calculated each frame
+ * The actual _dspTimeOffset value is set to whatever target offset we find that is closest to the average
+ * Why? Because the target offset is always either exactly right, or off by a significant amount
+ * The average tells us which of the encountered values should be considered the correct one
+ * With this approach, sample-perfect timing is achieved reliably
  */
 internal class AudioTimeSyncController_dspTimeOffset_Patch : IAffinity
 {
@@ -74,6 +77,7 @@ internal class AudioTimeSyncController_dspTimeOffset_Patch : IAffinity
             averageOffset = targetOffset;
             averageCount = 1;
             firstCorrectionDone = true;
+            ____dspTimeOffset = targetOffset;
         }
         else
         {
@@ -83,9 +87,13 @@ internal class AudioTimeSyncController_dspTimeOffset_Patch : IAffinity
                 // update cumulative average
                 averageOffset = (averageOffset * averageCount + targetOffset) / (averageCount + 1);
                 averageCount++;
+
+                // set dspTimeOffset to whatever targetOffset encountered that is closest to the average
+                if (Math.Abs(targetOffset - (averageOffset + syncOffset)) < Math.Abs(____dspTimeOffset - (averageOffset + syncOffset)))
+                {
+                    ____dspTimeOffset = targetOffset;
+                }
             }
         }
-
-        ____dspTimeOffset = averageOffset + syncOffset;
     }
 }
