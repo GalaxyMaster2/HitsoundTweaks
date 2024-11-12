@@ -1,10 +1,10 @@
-﻿using System.Reflection;
-using HitsoundTweaks.Configuration;
+﻿using HitsoundTweaks.Configuration;
 using HitsoundTweaks.Installers;
 using IPA;
 using IPA.Config;
 using IPA.Config.Stores;
 using SiraUtil.Zenject;
+using System.Reflection;
 using IPALogger = IPA.Logging.Logger;
 
 namespace HitsoundTweaks;
@@ -24,7 +24,7 @@ public class Plugin
     public void Init(IPALogger logger, Config config, Zenjector zenjector)
     {
         Log = logger;
-        var pluginConfig = config.Generated<PluginConfig>();   
+        var pluginConfig = config.Generated<PluginConfig>();
 
         zenjector.Install<AppInstaller>(Location.App, pluginConfig);
         zenjector.Install<MenuInstaller>(Location.Menu);

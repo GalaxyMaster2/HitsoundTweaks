@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using HitsoundTweaks.Configuration;
+using SiraUtil.Affinity;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using SiraUtil.Affinity;
 using UnityEngine;
 
 namespace HitsoundTweaks.HarmonyPatches;
@@ -20,7 +20,7 @@ internal class NoteCutSoundEffect_Transform_Position_NoteWasCut_Patch : IAffinit
     {
         this.config = config;
     }
-        
+
     [AffinityTranspiler]
     [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.NoteWasCut))]
     private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -45,7 +45,7 @@ internal class NoteCutSoundEffect_Transform_Position_NoteWasCut_Patch : IAffinit
 
     // set transform position if desired
     [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.NoteWasCut))]
-    private void Postfix(NoteCutSoundEffect __instance, AudioSource ____audioSource, NoteController 
+    private void Postfix(NoteCutSoundEffect __instance, AudioSource ____audioSource, NoteController
         ____noteController, bool ____goodCut, NoteController noteController, in NoteCutInfo noteCutInfo)
     {
         if (____noteController != noteController)
@@ -75,7 +75,7 @@ internal class NoteCutSoundEffect_Transform_Position_LateUpdate_Patch : IAffinit
     {
         this.config = config;
     }
-        
+
     [AffinityTranspiler]
     [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.OnLateUpdate))]
     private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
@@ -98,9 +98,9 @@ internal class NoteCutSoundEffect_Transform_Position_LateUpdate_Patch : IAffinit
 
         return code;
     }
-        
+
     [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.OnLateUpdate))]
-    private void Postfix(bool ____noteWasCut, Saber ____saber, AudioSource ____audioSource, NoteCutSoundEffect 
+    private void Postfix(bool ____noteWasCut, Saber ____saber, AudioSource ____audioSource, NoteCutSoundEffect
         __instance)
     {
         // set transform position if desired
@@ -119,7 +119,7 @@ internal class NoteCutSoundEffect_Transform_Position_Init_Patch : IAffinity
     {
         this.config = config;
     }
-        
+
     [AffinityTranspiler]
     [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
     private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

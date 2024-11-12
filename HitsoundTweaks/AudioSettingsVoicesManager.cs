@@ -7,9 +7,9 @@ public class AudioSettingsVoicesManager : IInitializable
 {
     private const int NumVirtualVoices = 128;
     private const int NumRealVoices = 64;
-    
+
     public int CurrentNumVirtualVoices { get; private set; } = AudioSettings.GetConfiguration().numVirtualVoices;
-    
+
     public void Initialize()
     {
         Plugin.Log.Debug($"Attempting to set number of virtual voices to {NumVirtualVoices}");
@@ -19,8 +19,8 @@ public class AudioSettingsVoicesManager : IInitializable
         {
             numVirtualVoices = NumVirtualVoices,
             numRealVoices = NumRealVoices
-        });     
-        
+        });
+
         var newConfig = AudioSettings.GetConfiguration();
         CurrentNumVirtualVoices = newConfig.numVirtualVoices;
 

@@ -15,7 +15,7 @@ internal class NoteCutSoundEffect_Misc_Patches : IAffinity
     {
         this.config = config;
     }
-        
+
     [AffinityPrefix]
     [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
     private void Prefix(ref bool ignoreSaberSpeed, AudioSource ____audioSource)

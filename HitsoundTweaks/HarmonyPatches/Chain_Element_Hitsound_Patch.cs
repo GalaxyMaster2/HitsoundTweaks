@@ -15,7 +15,7 @@ internal class NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch : IAffinit
     {
         this.config = config;
     }
-        
+
     [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.IsSupportedNote))]
     private void Postfix(NoteData noteData, ref bool __result)
     {
@@ -34,7 +34,7 @@ internal class NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch : IAffin
     {
         this.config = config;
     }
-        
+
     [AffinityPrefix]
     [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
     private void Prefix(ref float volumeMultiplier, NoteController noteController)

@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
+using SiraUtil.Affinity;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using SiraUtil.Affinity;
 using UnityEngine;
 
 namespace HitsoundTweaks.HarmonyPatches;
@@ -21,7 +21,7 @@ internal class NoteCutSoundEffectManager_Max_Active_SoundEffects_Patch : IAffini
     {
         this.audioSettingsVoicesManager = audioSettingsVoicesManager;
     }
-        
+
     [AffinityTranspiler]
     [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
     private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

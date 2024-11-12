@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using HitsoundTweaks.Configuration;
+using SiraUtil.Affinity;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using SiraUtil.Affinity;
 using UnityEngine;
 
 namespace HitsoundTweaks.HarmonyPatches;
@@ -20,7 +20,7 @@ internal class NoteCutSoundEffect_Random_Pitch_Patch : IAffinity
     {
         this.config = config;
     }
-        
+
     [AffinityTranspiler]
     [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.Init))]
     private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
