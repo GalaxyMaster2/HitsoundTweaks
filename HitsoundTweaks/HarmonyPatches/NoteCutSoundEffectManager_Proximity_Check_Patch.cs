@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using SiraUtil.Affinity;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -10,10 +11,11 @@ namespace HitsoundTweaks.HarmonyPatches;
  * Chain elements and heads can be spawned out of order, which can cause hitsounds to be skipped if chain element hitsounds are enabled
  * By making the time proximity check use an absolute value, we mitigate this issue
  */
-[HarmonyPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
-internal class NoteCutSoundEffectManager_Proximity_Check_Patch
+internal class NoteCutSoundEffectManager_Proximity_Check_Patch : IAffinity
 {
-    static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    [AffinityTranspiler]
+    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
+    private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var code = new List<CodeInstruction>(instructions);
 
@@ -48,7 +50,9 @@ internal class NoteCutSoundEffectManager_Proximity_Check_Patch
         return code;
     }
 
-    static bool Prefix(NoteController noteController, float ____prevNoteATime, float ____prevNoteBTime, NoteCutSoundEffect ____prevNoteASoundEffect, NoteCutSoundEffect ____prevNoteBSoundEffect, float ____beatAlignOffset, out bool __state)
+    [AffinityPrefix]
+    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
+    private bool Prefix(NoteController noteController, float ____prevNoteATime, float ____prevNoteBTime, NoteCutSoundEffect ____prevNoteASoundEffect, NoteCutSoundEffect ____prevNoteBSoundEffect, float ____beatAlignOffset, out bool __state)
     {
         __state = false; // whether or not we should multiply volume in the Postfix
         NoteData noteData = noteController.noteData;
@@ -85,8 +89,9 @@ internal class NoteCutSoundEffectManager_Proximity_Check_Patch
         return true;
     }
 
+    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
     // multiply volume if indicated by Prefix
-    static void Postfix(NoteController noteController, NoteCutSoundEffect ____prevNoteASoundEffect, NoteCutSoundEffect ____prevNoteBSoundEffect, bool __state, bool __runOriginal)
+    private void Postfix(NoteController noteController, NoteCutSoundEffect ____prevNoteASoundEffect, NoteCutSoundEffect ____prevNoteBSoundEffect, bool __state, bool __runOriginal)
     {
         if (__state && __runOriginal)
         {

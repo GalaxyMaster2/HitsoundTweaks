@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using SiraUtil.Affinity;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -12,10 +13,11 @@ namespace HitsoundTweaks.HarmonyPatches;
  * 2. AudioSource priorities are not managed very smoothly, which gives Unity little time to sort things out, leading to hitsounds cutting out, not playing, etc.
  *    This reworks priority assignment to smoothly scale priorities based on time relative to the note it's meant for, which greatly improves reliability
  */
-[HarmonyPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.OnLateUpdate))]
-internal class Hitsound_Reliability_Patches
+internal class Hitsound_Reliability_Patches : IAffinity
 {
-    static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    [AffinityTranspiler]
+    [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.OnLateUpdate))]
+    private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var code = new List<CodeInstruction>(instructions);
 
@@ -36,8 +38,10 @@ internal class Hitsound_Reliability_Patches
         return code;
     }
 
+    [AffinityPrefix]
+    [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.OnLateUpdate))]
     // retry scheduling playback just ahead of time
-    static void Prefix(AudioSource ____audioSource, double ____startDSPTime, ref bool ____isPlaying)
+    private void Prefix(AudioSource ____audioSource, double ____startDSPTime, ref bool ____isPlaying)
     {
         const double retryAheadTime = 0.05;
         if (!____isPlaying && ____startDSPTime - AudioSettings.dspTime < retryAheadTime)
@@ -56,7 +60,8 @@ internal class Hitsound_Reliability_Patches
         }
     }
 
-    static void Postfix(bool ____noteWasCut, AudioSource ____audioSource, bool ____goodCut, double ____startDSPTime, double ____aheadTime)
+    [AffinityPatch(typeof(NoteCutSoundEffect), nameof(NoteCutSoundEffect.OnLateUpdate))]
+    private void Postfix(bool ____noteWasCut, AudioSource ____audioSource, bool ____goodCut, double ____startDSPTime, double ____aheadTime)
     {
         // set priority based on time relative to note time
         var dspTime = AudioSettings.dspTime;

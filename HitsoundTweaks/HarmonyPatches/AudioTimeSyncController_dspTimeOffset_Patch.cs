@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using SiraUtil.Affinity;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -13,10 +14,11 @@ namespace HitsoundTweaks.HarmonyPatches;
  * To fix this, we patch out the _dspTimeOffset update, and reimplement it to be a cumulative average of the target offset calculated each frame
  * This reliably and consistently gets within a handful of audio samples after a few seconds, which is for all intents and purposes good enough
  */
-[HarmonyPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.Update))]
-internal class AudioTimeSyncController_dspTimeOffset_Patch
+internal class AudioTimeSyncController_dspTimeOffset_Patch : IAffinity
 {
-    static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+    [AffinityTranspiler]
+    [AffinityPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.Update))]
+    private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var code = new List<CodeInstruction>(instructions);
 
@@ -45,10 +47,12 @@ internal class AudioTimeSyncController_dspTimeOffset_Patch
     }
 
     // reimplement _dspTimeOffset correction
-    static bool firstCorrectionDone = false;
-    static int averageCount = 1;
-    static double averageOffset = 0.0;
-    static void Postfix(ref double ____dspTimeOffset, AudioSource ____audioSource, float ____timeScale, AudioTimeSyncController.State ____state)
+    private bool firstCorrectionDone = false;
+    private int averageCount = 1;
+    private double averageOffset = 0.0;
+
+    [AffinityPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.Update))]
+    private void Postfix(ref double ____dspTimeOffset, AudioSource ____audioSource, float ____timeScale, AudioTimeSyncController.State ____state)
     {
         const double maxDiscrepancy = 0.05;
 

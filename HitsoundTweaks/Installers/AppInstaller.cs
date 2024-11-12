@@ -1,4 +1,5 @@
 using HitsoundTweaks.Configuration;
+using HitsoundTweaks.HarmonyPatches;
 using Zenject;
 
 namespace HitsoundTweaks.Installers;
@@ -18,6 +19,8 @@ public class AppInstaller : Installer
         
         Container.BindInterfacesAndSelfTo<AudioSettingsVoicesManager>().AsSingle();
         
-        Container.BindInterfacesTo<HarmonyPatchController>().AsSingle();
+        Container.BindInterfacesTo<AudioTimeSyncController_dspTimeOffset_Patch>().AsSingle();
+        Container.BindInterfacesTo<Hitsound_Reliability_Patches>().AsSingle();
+        Container.BindInterfacesTo<NoteCutSoundEffectManager_Proximity_Check_Patch>().AsSingle();
     }
 }
