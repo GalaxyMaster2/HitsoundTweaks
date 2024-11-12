@@ -1,47 +1,33 @@
-﻿using IPA;
+﻿using System.Reflection;
+using HitsoundTweaks.Configuration;
+using HitsoundTweaks.Installers;
+using IPA;
 using IPA.Config;
 using IPA.Config.Stores;
-using UnityEngine;
+using SiraUtil.Zenject;
 using IPALogger = IPA.Logging.Logger;
 
-namespace HitsoundTweaks
+namespace HitsoundTweaks;
+
+[Plugin(RuntimeOptions.SingleStartInit), NoEnableDisable]
+public class Plugin
 {
-    [Plugin(RuntimeOptions.SingleStartInit)]
-    public class Plugin
+    internal static IPALogger Log { get; private set; }
+    internal static Assembly ExecutingAssembly { get; } = Assembly.GetExecutingAssembly();
+
+    [Init]
+    /// <summary>
+    /// Called when the plugin is first loaded by IPA (either when the game starts or when the plugin is enabled if it starts disabled).
+    /// [Init] methods that use a Constructor or called before regular methods like InitWithConfig.
+    /// Only use [Init] with one Constructor.
+    /// </summary>
+    public void Init(IPALogger logger, Config config, Zenjector zenjector)
     {
-        internal static Plugin Instance { get; private set; }
-        internal static IPALogger Log { get; private set; }
+        Log = logger;
+        var pluginConfig = config.Generated<PluginConfig>();   
 
-        [Init]
-        /// <summary>
-        /// Called when the plugin is first loaded by IPA (either when the game starts or when the plugin is enabled if it starts disabled).
-        /// [Init] methods that use a Constructor or called before regular methods like InitWithConfig.
-        /// Only use [Init] with one Constructor.
-        /// </summary>
-        public void Init(IPALogger logger)
-        {
-            Instance = this;
-            Log = logger;
-        }
-
-        #region BSIPA Config
-        [Init]
-        public void InitWithConfig(Config conf)
-        {
-            Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-            Log.Debug("Config loaded");
-        }
-        #endregion
-
-        [OnStart]
-        public void OnApplicationStart()
-        {
-            new GameObject("HitsoundTweaksController").AddComponent<HitsoundTweaksController>();
-        }
-
-        [OnExit]
-        public void OnApplicationQuit()
-        {
-        }
+        zenjector.Install<AppInstaller>(Location.App, pluginConfig);
+        zenjector.Install<MenuInstaller>(Location.Menu);
+        zenjector.Install<PlayerInstaller>(Location.Player | Location.Tutorial);
     }
 }
