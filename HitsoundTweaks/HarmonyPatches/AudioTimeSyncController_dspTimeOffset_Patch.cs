@@ -54,7 +54,7 @@ internal class AudioTimeSyncController_dspTimeOffset_Patch
 
         // the cumulative average trends towards a consistent slightly desynced value, which this offset compensates for
         // this value works well at both 90 and 60 fps, so I'm assuming it's independent of framerate
-        const double syncOffset = -0.0059;
+        const double syncOffset = -0.0043;
 
         if (____state == AudioTimeSyncController.State.Stopped)
         {
