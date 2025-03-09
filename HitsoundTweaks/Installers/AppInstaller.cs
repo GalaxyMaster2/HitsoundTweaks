@@ -22,5 +22,6 @@ public class AppInstaller : Installer
         Container.BindInterfacesTo<AudioTimeSyncController_dspTimeOffset_Patch>().AsSingle();
         Container.BindInterfacesTo<Hitsound_Reliability_Patches>().AsSingle();
         Container.BindInterfacesTo<NoteCutSoundEffectManager_Proximity_Check_Patch>().AsSingle();
+        Container.BindInterfacesTo<Early_Note_Spawn_Fix>().AsSingle();
     }
 }
