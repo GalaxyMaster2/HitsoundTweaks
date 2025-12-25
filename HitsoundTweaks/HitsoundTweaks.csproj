@@ -137,6 +137,7 @@
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
     <EmbeddedResource Include="UI\ModSettingsView.bsml" />
+    <EmbeddedResource Include="UI\ModSettingsView_NoSpatializer.bsml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')" />

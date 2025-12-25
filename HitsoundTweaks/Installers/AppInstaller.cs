@@ -18,7 +18,7 @@ public class AppInstaller : Installer
         Container.BindInstance(config).AsSingle();
 
         Container.BindInterfacesAndSelfTo<AudioSettingsVoicesManager>().AsSingle();
-
+        Container.BindInterfacesAndSelfTo<SpatializerDetectionHelper>().AsSingle();
         Container.BindInterfacesTo<AudioTimeSyncController_dspTimeOffset_Patch>().AsSingle();
         Container.BindInterfacesTo<Hitsound_Reliability_Patches>().AsSingle();
         Container.BindInterfacesTo<NoteCutSoundEffectManager_Proximity_Check_Patch>().AsSingle();

@@ -15,5 +15,6 @@ public class PlayerInstaller : Installer
         Container.BindInterfacesTo<NoteCutSoundEffectManager_Chain_Element_Hitsound_Patch>().AsSingle();
         Container.BindInterfacesTo<NoteCutSoundEffectManager_Max_Active_SoundEffects_Patch>().AsSingle();
         Container.BindInterfacesTo<NoteCutSoundEffect_Chain_Element_Volume_Multiplier_Patch>().AsSingle();
+        Container.BindInterfacesTo<NoteCutSoundEffect_PauseOnMiss_Patch>().AsSingle();
     }
 }

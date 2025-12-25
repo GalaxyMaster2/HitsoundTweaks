@@ -1,0 +1,15 @@
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+	xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+	>
+	<settings-container>
+		<toggle-setting text='Ignore Saber Speed' hover-hint='When enabled, hitsounds always play even when the sabers are not moving.' value='ignore-saber-speed'></toggle-setting>
+		<toggle-setting text='Pause Hitsound when missed' hover-hint='When enabled, any notes missed, hitsounds will be paused.' value='PauseHitSoundWhenMissed'></toggle-setting>
+		<toggle-setting text='Hitsound Spatialization' hover-hint='When disabled, hitsounds will be played as-is without further processing, instead of being spatialized. (Note: This version of beat saber doesnt have a spatializer so hitsounds will be stereo-panned rather than fully spatialized. True 3D spatialization is available in Beat Saber 1.40.2 or earlier.)' value='enable-spatialization'></toggle-setting>
+		<toggle-setting text='Static Hitsound Position' hover-hint='When enabled, hitsounds are located at your feet, instead of your saber tips.' value='static-sound-pos'></toggle-setting>
+		<toggle-setting text='Follow Saber After Slice' hover-hint='When enabled, hitsounds will follow the saber after the note was cut giving the saber a sort of resonance.' value='followAfterCut'></toggle-setting>
+		<slider-setting text='Random Pitch (min)' hover-hint='The minimum value for randomized hitsound pitch. If minimum and maximum are equal, hitsound pitch is not randomized.' show-buttons='true' min='0' max='2' increment='0.05' value='random-pitch-min'></slider-setting>
+		<slider-setting text='Random Pitch (max)' hover-hint='The maximum value for randomized hitsound pitch. If minimum and maximum are equal, hitsound pitch is not randomized.' show-buttons='true' min='0' max='2' increment='0.05' value='random-pitch-max'></slider-setting>
+		<toggle-setting text='Enable Chain Element Hitsounds' hover-hint='When enabled, hitsounds will be played for chain elements.' value='enable-chain-element-hitsounds'></toggle-setting>
+		<slider-setting text='Chain Volume Multiplier' hover-hint='Volume multiplier used for chain element hitsounds.' show-buttons='true' min='0' max='2' increment='0.05' value='chain-element-volume-multiplier'></slider-setting>
+	</settings-container>
+</bg>
