@@ -3,9 +3,9 @@
   "id": "HitsoundTweaks",
   "name": "HitsoundTweaks",
   "author": "GalaxyMaster",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "description": "Adds more configurability to hitsounds, and fixes several base game bugs to make them more reliable and consistent.",
-  "gameVersion": "1.40.3",
+  "gameVersion": "1.44.0",
   "dependsOn": {
     "BSIPA": "^4.3.5",
     "BeatSaberMarkupLanguage": "^1.12.5",
