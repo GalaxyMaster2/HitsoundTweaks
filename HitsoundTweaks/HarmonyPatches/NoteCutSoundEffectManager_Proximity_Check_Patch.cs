@@ -14,7 +14,7 @@ namespace HitsoundTweaks.HarmonyPatches;
 internal class NoteCutSoundEffectManager_Proximity_Check_Patch : IAffinity
 {
     [AffinityTranspiler]
-    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
+    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.SpawnNoteCutSoundEffect))]
     private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var code = new List<CodeInstruction>(instructions);
@@ -51,7 +51,7 @@ internal class NoteCutSoundEffectManager_Proximity_Check_Patch : IAffinity
     }
 
     [AffinityPrefix]
-    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
+    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.SpawnNoteCutSoundEffect))]
     private bool Prefix(NoteController noteController, float ____prevNoteATime, float ____prevNoteBTime, NoteCutSoundEffect ____prevNoteASoundEffect, NoteCutSoundEffect ____prevNoteBSoundEffect, float ____beatAlignOffset, out bool __state)
     {
         __state = false; // whether or not we should multiply volume in the Postfix
@@ -89,7 +89,7 @@ internal class NoteCutSoundEffectManager_Proximity_Check_Patch : IAffinity
         return true;
     }
 
-    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
+    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.SpawnNoteCutSoundEffect))]
     // multiply volume if indicated by Prefix
     private void Postfix(NoteController noteController, NoteCutSoundEffect ____prevNoteASoundEffect, NoteCutSoundEffect ____prevNoteBSoundEffect, bool __state, bool __runOriginal)
     {

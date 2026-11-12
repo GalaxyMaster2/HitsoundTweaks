@@ -14,7 +14,7 @@ namespace HitsoundTweaks.HarmonyPatches;
 internal class NoteCutSoundEffectManager_Max_Active_SoundEffects_Patch : IAffinity
 {
     [AffinityTranspiler]
-    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.HandleNoteWasSpawned))]
+    [AffinityPatch(typeof(NoteCutSoundEffectManager), nameof(NoteCutSoundEffectManager.SpawnNoteCutSoundEffect))]
     private IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
     {
         var code = new List<CodeInstruction>(instructions);
