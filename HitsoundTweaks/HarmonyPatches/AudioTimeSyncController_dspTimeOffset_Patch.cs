@@ -23,7 +23,7 @@ internal class AudioTimeSyncController_dspTimeOffset_Patch : IAffinity
     private double dspTimeOffset = 0;
 
     [AffinityPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.Update))]
-    private void Postfix(ref double ____dspTimeOffset, AudioSource ____audioSource, float ____timeScale, AudioTimeSyncController.State ____state)
+    private void Postfix(ref double ____dspTimeOffset, AudioSource ____audioSource, float ____timeScale, IAudioTimeSource.State ____state)
     {
         const double maxDiscrepancy = 0.05;
 
@@ -31,7 +31,7 @@ internal class AudioTimeSyncController_dspTimeOffset_Patch : IAffinity
         // this value works well at both 90 and 60 fps, so I'm assuming it's independent of framerate
         const double syncOffset = -0.0043;
 
-        if (____state == AudioTimeSyncController.State.Stopped)
+        if (____state == IAudioTimeSource.State.Stopped)
         {
             firstCorrectionDone = false; // easiest way to reset this flag, Update is reliably called at least a few frames before playback starts
             dspTimeOffset = 0;
