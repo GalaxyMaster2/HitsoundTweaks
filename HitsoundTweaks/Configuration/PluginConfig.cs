@@ -13,9 +13,6 @@ internal class PluginConfig
     [UIValue("static-sound-pos")]
     public virtual bool StaticSoundPos { get; set; } = false;
 
-    [UIValue("enable-spatialization")]
-    public virtual bool EnableSpatialization { get; set; } = true;
-
     [UIValue("random-pitch-min")]
     public virtual float RandomPitchMin { get; set; } = 0.9f;
 

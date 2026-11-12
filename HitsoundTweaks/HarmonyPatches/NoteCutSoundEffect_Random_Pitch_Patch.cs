@@ -54,7 +54,7 @@ internal class NoteCutSoundEffect_Random_Pitch_Patch : IAffinity
         // fix broken pitch correction for hitsound alignment
         // - the game scales both the alignment offset and the sfx latency combined, while it should only scale the alignment offset
         const float hitsoundAlignOffset = 0.185f;
-        var sfxLatency = config.EnableSpatialization ? aheadTime - hitsoundAlignOffset : 0f;
+        var sfxLatency = aheadTime - hitsoundAlignOffset;
         ____pitch = randomPitch;
         aheadTime = (hitsoundAlignOffset / randomPitch + sfxLatency) * randomPitch;
     }

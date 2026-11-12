@@ -7,7 +7,7 @@ public class PlayerInstaller : Installer
 {
     public override void InstallBindings()
     {
-        Container.BindInterfacesTo<NoteCutSoundEffect_Misc_Patches>().AsSingle();
+        Container.BindInterfacesTo<NoteCutSoundEffect_IgnoreSaberSpeed_Patch>().AsSingle();
         Container.BindInterfacesTo<NoteCutSoundEffect_Random_Pitch_Patch>().AsSingle();
         Container.BindInterfacesTo<NoteCutSoundEffect_Transform_Position_Init_Patch>().AsSingle();
         Container.BindInterfacesTo<NoteCutSoundEffect_Transform_Position_NoteWasCut_Patch>().AsSingle();

@@ -5,13 +5,13 @@ using UnityEngine;
 namespace HitsoundTweaks.HarmonyPatches;
 
 /*
- * This enables configuration for ignoring saber speed, and enabling/disabling hitsound spatialization
+ * This enables configuration for ignoring saber speed
  */
-internal class NoteCutSoundEffect_Misc_Patches : IAffinity
+internal class NoteCutSoundEffect_IgnoreSaberSpeed_Patch : IAffinity
 {
     private readonly PluginConfig config;
 
-    private NoteCutSoundEffect_Misc_Patches(PluginConfig config)
+    private NoteCutSoundEffect_IgnoreSaberSpeed_Patch(PluginConfig config)
     {
         this.config = config;
     }
@@ -22,8 +22,5 @@ internal class NoteCutSoundEffect_Misc_Patches : IAffinity
     {
         // if true, always play hitsounds even if saber isn't moving
         ignoreSaberSpeed = config.IgnoreSaberSpeed;
-
-        // enable/disable spatialization
-        ____audioSource.spatialize = config.EnableSpatialization;
     }
 }

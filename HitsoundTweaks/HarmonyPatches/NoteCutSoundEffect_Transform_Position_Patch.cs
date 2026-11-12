@@ -9,7 +9,7 @@ using UnityEngine;
 namespace HitsoundTweaks.HarmonyPatches;
 
 /*
- * These patches allow the user to configure whether or not the spatialized hitsound should follow the sabers
+ * These patches allow the user to configure whether or not the hitsound should follow the sabers
  * If disabled, the hitsound will always play at the player's feet
  */
 internal class NoteCutSoundEffect_Transform_Position_NoteWasCut_Patch : IAffinity
@@ -55,12 +55,11 @@ internal class NoteCutSoundEffect_Transform_Position_NoteWasCut_Patch : IAffinit
 
         if (!____goodCut)
         {
-            ____audioSource.spatialize = true;
             __instance.transform.position = noteCutInfo.cutPoint;
             return;
         }
 
-        if (!config.StaticSoundPos && ____audioSource.spatialize)
+        if (!config.StaticSoundPos)
         {
             __instance.transform.position = noteCutInfo.cutPoint;
         }
@@ -104,9 +103,9 @@ internal class NoteCutSoundEffect_Transform_Position_LateUpdate_Patch : IAffinit
         __instance)
     {
         // set transform position if desired
-        if (!____noteWasCut && !config.StaticSoundPos && ____audioSource.spatialize)
+        if (!____noteWasCut && !config.StaticSoundPos)
         {
-            __instance.transform.position = ____saber.saberBladeTopPos;
+            __instance.transform.position = ____saber.saberBladeTopPosForLogic;
         }
     }
 }
@@ -144,9 +143,9 @@ internal class NoteCutSoundEffect_Transform_Position_Init_Patch : IAffinity
     private void Postfix(Saber saber, AudioSource ____audioSource, NoteCutSoundEffect __instance)
     {
         // not sure how necessary this is, but since the game does it I might as well too
-        if (!config.StaticSoundPos && ____audioSource.spatialize)
+        if (!config.StaticSoundPos)
         {
-            __instance.transform.position = saber.saberBladeTopPos;
+            __instance.transform.position = saber.saberBladeTopPosForLogic;
         }
     }
 }
